@@ -1,18 +1,49 @@
-# Docker
-
-## ПІБ: Тринька Сергій
-## Група: 232.1
-
-## Практична робота
-Налаштування середовища для розробки
-В практичні роботі я вдало встановив docker decstop і провірив весію.
-1.
+## Student
+- Name: Тринька Сергій
+- Group: 232.1
+ 
+## Практичне заняття №2 — NestJS + PostgreSQL + Redis
+ 
+## Структура репозиторію
+```
+.
+├── src/              	# NestJS source code
+├── Dockerfile
+├── docker-compose.yml
+├── .env.example      	# шаблон змінних оточення
+└── README.md
+```
+ 
+## Запуск проекту
+```bash
+cp .env.example .env   # налаштувати значення
+docker compose up --build
+```
+ 
+## Перевірка сервісів
+```text
+<вивід docker compose ps>
+```
+![alt text](<194334.png>)
+ 
+## Перевірка PostgreSQL
+```text
+<вивід docker compose exec postgres psql -U nestuser -d nestdb -c '\l'>
+```
 ![alt text](image.png)
-2.
-![alt text](image-1.png)
-3.
-![alt text](image-2.png)
-4.
+ 
+## Перевірка Redis
+```text
+<вивід docker compose exec redis redis-cli ping>
+```
+ ![alt text](image-1.png)
+## Перевірка застосунку
+```text
+<вивід curl http://localhost:3000>
+```
+ ![alt text](image-2.png)
+## Логи NestJS (фрагмент)
+```text
+<вивід docker compose logs app (ключові рядки запуску)>
+```
 ![alt text](image-3.png)
-5.
-![alt text](image-4.png)
