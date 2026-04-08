@@ -52,17 +52,17 @@ docker compose up --build
 ```text
 <вивід docker compose exec postgres psql -U nestuser -d nestdb -c "\dt">
 ```
-![alt text](image-4.png) 
+![alt text](image.png) 
 ### Тест створення категорії
 ```text
 <вивід curl POST /api/categories>
 ```
-![alt text](image.png)
+![alt text](image-1.png)
 ### Тест створення продукту
 ```text
 <вивід curl POST /api/products>
 ```
-![alt text](image-1.png)
+![alt text](image-2.png)
 ### Тест отримання продуктів
 ```text
 <вивід curl GET /api/products>
@@ -72,4 +72,4 @@ docker compose up --build
 ```text
 <вивід curl GET /api/products/999>
 ```
-![alt text](image-2.png)
+![alt text](image-4.png)
