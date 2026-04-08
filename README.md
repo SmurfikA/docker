@@ -2,48 +2,74 @@
 - Name: Тринька Сергій
 - Group: 232.1
  
-## Практичне заняття №2 — NestJS + PostgreSQL + Redis
+## Практичне заняття №3 — CRUD REST API для MiniShop
  
-## Структура репозиторію
+### Структура репозиторію
 ```
 .
-├── src/              	# NestJS source code
+├── src/
+│   ├── categories/
+│   │   ├── category.entity.ts
+│   │   ├── categories.module.ts
+│   │   ├── categories.service.ts
+│   │   └── categories.controller.ts
+│   ├── products/
+│   │   ├── product.entity.ts
+│   │   ├── products.module.ts
+│   │   ├── products.service.ts
+│   │   └── products.controller.ts
+│   ├── migrations/
+│   │   ├── 1700000001-CreateTables.ts
+│   │   └── <timestamp>-AddIsActiveToProducts.ts
+│   ├── data-source.ts
+│   └── app.module.ts
 ├── Dockerfile
 ├── docker-compose.yml
-├── .env.example      	# шаблон змінних оточення
 └── README.md
 ```
  
-## Запуск проекту
+### Запуск проекту
 ```bash
-cp .env.example .env   # налаштувати значення
+cp .env.example .env
 docker compose up --build
 ```
  
-## Перевірка сервісів
-```text
-<вивід docker compose ps>
-```
-![alt text](<194334.png>)
+### API Endpoints
+| Method | URL | Опис |
+|--------|-----|------|
+| GET | /api/categories | Список категорій |
+| GET | /api/categories/:id | Одна категорія |
+| POST | /api/categories | Створити категорію |
+| PATCH | /api/categories/:id | Оновити категорію |
+| DELETE | /api/categories/:id | Видалити категорію |
+| GET | /api/products | Список продуктів |
+| GET | /api/products/:id | Один продукт |
+| POST | /api/products | Створити продукт |
+| PATCH | /api/products/:id | Оновити продукт |
+| DELETE | /api/products/:id | Видалити продукт |
  
-## Перевірка PostgreSQL
+### Перевірка міграцій
 ```text
-<вивід docker compose exec postgres psql -U nestuser -d nestdb -c '\l'>
+<вивід docker compose exec postgres psql -U nestuser -d nestdb -c "\dt">
+```
+![alt text](image-4.png) 
+### Тест створення категорії
+```text
+<вивід curl POST /api/categories>
 ```
 ![alt text](image.png)
- 
-## Перевірка Redis
+### Тест створення продукту
 ```text
-<вивід docker compose exec redis redis-cli ping>
+<вивід curl POST /api/products>
 ```
- ![alt text](image-1.png)
-## Перевірка застосунку
+![alt text](image-1.png)
+### Тест отримання продуктів
 ```text
-<вивід curl http://localhost:3000>
-```
- ![alt text](image-2.png)
-## Логи NestJS (фрагмент)
-```text
-<вивід docker compose logs app (ключові рядки запуску)>
+<вивід curl GET /api/products>
 ```
 ![alt text](image-3.png)
+### Тест 404
+```text
+<вивід curl GET /api/products/999>
+```
+![alt text](image-2.png)
