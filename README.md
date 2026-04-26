@@ -2,26 +2,34 @@
 - Name: Тринька Сергій
 - Group: 232.1
  
-## Практичне заняття №3 — CRUD REST API для MiniShop
+## Практичне заняття №4 — DTO + class-validator + Pipes
  
 ### Структура репозиторію
 ```
 .
 ├── src/
 │   ├── categories/
+│   │   ├── dto/
+│   │   │   ├── create-category.dto.ts
+│   │   │   └── update-category.dto.ts
 │   │   ├── category.entity.ts
 │   │   ├── categories.module.ts
 │   │   ├── categories.service.ts
 │   │   └── categories.controller.ts
 │   ├── products/
+│   │   ├── dto/
+│   │   │   ├── create-product.dto.ts
+│   │   │   └── update-product.dto.ts
 │   │   ├── product.entity.ts
 │   │   ├── products.module.ts
 │   │   ├── products.service.ts
 │   │   └── products.controller.ts
+│   ├── common/
+│   │   └── pipes/
+│   │   	└── trim.pipe.ts
 │   ├── migrations/
-│   │   ├── 1700000001-CreateTables.ts
-│   │   └── <timestamp>-AddIsActiveToProducts.ts
 │   ├── data-source.ts
+│   ├── main.ts
 │   └── app.module.ts
 ├── Dockerfile
 ├── docker-compose.yml
@@ -33,43 +41,29 @@
 cp .env.example .env
 docker compose up --build
 ```
- 
-### API Endpoints
-| Method | URL | Опис |
-|--------|-----|------|
-| GET | /api/categories | Список категорій |
-| GET | /api/categories/:id | Одна категорія |
-| POST | /api/categories | Створити категорію |
-| PATCH | /api/categories/:id | Оновити категорію |
-| DELETE | /api/categories/:id | Видалити категорію |
-| GET | /api/products | Список продуктів |
-| GET | /api/products/:id | Один продукт |
-| POST | /api/products | Створити продукт |
-| PATCH | /api/products/:id | Оновити продукт |
-| DELETE | /api/products/:id | Видалити продукт |
- 
-### Перевірка міграцій
+![alt text](image.png)
+### Тест валідації — порожнє ім'я категорії
 ```text
-<вивід docker compose exec postgres psql -U nestuser -d nestdb -c "\dt">
+<вивід curl POST /api/categories з {"name": ""}>
 ```
-![alt text](image.png) 
-### Тест створення категорії
+![alt text](image-1.png) 
+### Тест валідації — від'ємна ціна продукту
 ```text
-<вивід curl POST /api/categories>
-```
-![alt text](image-1.png)
-### Тест створення продукту
-```text
-<вивід curl POST /api/products>
+<вивід curl POST /api/products з {"name": "Test", "price": -5}>
 ```
 ![alt text](image-2.png)
-### Тест отримання продуктів
+### Тест валідації — зайве поле
 ```text
-<вивід curl GET /api/products>
+<вивід curl POST /api/categories з {"name": "Test", "isAdmin": true}>
 ```
-![alt text](image-3.png)
-### Тест 404
+![alt text](image-3.png) 
+### Тест TrimPipe
 ```text
-<вивід curl GET /api/products/999>
+<вивід curl POST /api/categories з {"name": "  Trimmed  "}>
 ```
 ![alt text](image-4.png)
+### Тест валідне створення продукту
+```text
+<вивід curl POST /api/products з валідними даними>
+```
+![alt text](image-5.png)
