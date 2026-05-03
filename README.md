@@ -1,6 +1,6 @@
 ## Student
-- Name: <ПІБ>
-- Group: <Група>
+- Name: <Тринька Сергій>
+- Group: <232.1>
  
 ## Практичне заняття №5 — JWT Authentication + Guards + RBAC
  
