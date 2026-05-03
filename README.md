@@ -1,32 +1,37 @@
 ## Student
-- Name: Тринька Сергій
-- Group: 232.1
+- Name: <ПІБ>
+- Group: <Група>
  
-## Практичне заняття №4 — DTO + class-validator + Pipes
+## Практичне заняття №5 — JWT Authentication + Guards + RBAC
  
 ### Структура репозиторію
 ```
 .
 ├── src/
-│   ├── categories/
+│   ├── auth/
 │   │   ├── dto/
-│   │   │   ├── create-category.dto.ts
-│   │   │   └── update-category.dto.ts
-│   │   ├── category.entity.ts
-│   │   ├── categories.module.ts
-│   │   ├── categories.service.ts
-│   │   └── categories.controller.ts
-│   ├── products/
-│   │   ├── dto/
-│   │   │   ├── create-product.dto.ts
-│   │   │   └── update-product.dto.ts
-│   │   ├── product.entity.ts
-│   │   ├── products.module.ts
-│   │   ├── products.service.ts
-│   │   └── products.controller.ts
+│   │   │   ├── register.dto.ts
+│   │   │   └── login.dto.ts
+│   │   ├── auth.module.ts
+│   │   ├── auth.service.ts
+│   │   └── auth.controller.ts
+│   ├── users/
+│   │   ├── user.entity.ts
+│   │   ├── users.module.ts
+│   │   └── users.service.ts
 │   ├── common/
+│   │   ├── enums/
+│   │   │   └── role.enum.ts
+│   │   ├── guards/
+│   │   │   ├── jwt-auth.guard.ts
+│   │   │   └── roles.guard.ts
+│   │   ├── decorators/
+│   │   │   ├── current-user.decorator.ts
+│   │   │   └── roles.decorator.ts
 │   │   └── pipes/
 │   │   	└── trim.pipe.ts
+│   ├── categories/ ...
+│   ├── products/ ...
 │   ├── migrations/
 │   ├── data-source.ts
 │   ├── main.ts
@@ -41,29 +46,41 @@
 cp .env.example .env
 docker compose up --build
 ```
-![alt text](image.png)
-### Тест валідації — порожнє ім'я категорії
+ 
+### API Endpoints
+| Method | URL | Auth | Role |
+|--------|-----|------|------|
+| POST | /auth/register | - | - |
+| POST | /auth/login | - | - |
+| GET | /api/categories | - | - |
+| POST | /api/categories | JWT | admin |
+| GET | /api/products | - | - |
+| POST | /api/products | JWT | admin |
+| PATCH | /api/products/:id | JWT | admin |
+| DELETE | /api/products/:id | JWT | admin |
+ 
+### Тест реєстрації
 ```text
-<вивід curl POST /api/categories з {"name": ""}>
+<вивід curl POST /auth/register>
 ```
-![alt text](image-1.png) 
-### Тест валідації — від'ємна ціна продукту
+![alt text](image.png) 
+### Тест логіну
 ```text
-<вивід curl POST /api/products з {"name": "Test", "price": -5}>
+<вивід curl POST /auth/login>
 ```
-![alt text](image-2.png)
-### Тест валідації — зайве поле
+![![alt text](image-2.png)](image-1.png)
+### Тест 401 — запит без токена
 ```text
-<вивід curl POST /api/categories з {"name": "Test", "isAdmin": true}>
+<вивід curl POST /api/products без Authorization>
 ```
-![alt text](image-3.png) 
-### Тест TrimPipe
+![alt text](image-3.png)
+### Тест 403 — запит з роллю user
 ```text
-<вивід curl POST /api/categories з {"name": "  Trimmed  "}>
+<вивід curl POST /api/products з токеном user>
 ```
-![alt text](image-4.png)
-### Тест валідне створення продукту
+![alt text](image-4.png) 
+### Тест успішного створення від admin
 ```text
-<вивід curl POST /api/products з валідними даними>
+<вивід curl POST /api/products з токеном admin>
 ```
 ![alt text](image-5.png)
