@@ -2,23 +2,17 @@
 - Name: <Тринька Сергій>
 - Group: <232.1>
  
-## Практичне заняття №5 — JWT Authentication + Guards + RBAC
+ 
+## Практичне заняття №6 — Interceptors + Exception Filters + Swagger
  
 ### Структура репозиторію
 ```
 .
 ├── src/
-│   ├── auth/
-│   │   ├── dto/
-│   │   │   ├── register.dto.ts
-│   │   │   └── login.dto.ts
-│   │   ├── auth.module.ts
-│   │   ├── auth.service.ts
-│   │   └── auth.controller.ts
-│   ├── users/
-│   │   ├── user.entity.ts
-│   │   ├── users.module.ts
-│   │   └── users.service.ts
+│   ├── auth/ ...
+│   ├── users/ ...
+│   ├── categories/ ...
+│   ├── products/ ...
 │   ├── common/
 │   │   ├── enums/
 │   │   │   └── role.enum.ts
@@ -28,14 +22,17 @@
 │   │   ├── decorators/
 │   │   │   ├── current-user.decorator.ts
 │   │   │   └── roles.decorator.ts
+│   │   ├── interceptors/
+│   │   │   ├── logging.interceptor.ts
+│   │   │   └── transform.interceptor.ts
+│   │   ├── filters/
+│   │   │   └── http-exception.filter.ts
 │   │   └── pipes/
 │   │   	└── trim.pipe.ts
-│   ├── categories/ ...
-│   ├── products/ ...
 │   ├── migrations/
-│   ├── data-source.ts
 │   ├── main.ts
 │   └── app.module.ts
+├── swagger-screenshot.png
 ├── Dockerfile
 ├── docker-compose.yml
 └── README.md
@@ -47,40 +44,40 @@ cp .env.example .env
 docker compose up --build
 ```
  
-### API Endpoints
-| Method | URL | Auth | Role |
-|--------|-----|------|------|
-| POST | /auth/register | - | - |
-| POST | /auth/login | - | - |
-| GET | /api/categories | - | - |
-| POST | /api/categories | JWT | admin |
-| GET | /api/products | - | - |
-| POST | /api/products | JWT | admin |
-| PATCH | /api/products/:id | JWT | admin |
-| DELETE | /api/products/:id | JWT | admin |
+### Swagger UI
+http://localhost:3000/api/docs
  
-### Тест реєстрації
-```text
-<вивід curl POST /auth/register>
+![Swagger](swagger-screenshot.png)
+ 
+### Формат успішної відповіді
+```json
+{
+  "data": { ... },
+  "statusCode": 200,
+  "timestamp": "2025-01-15T10:30:00.000Z"
+}
 ```
-![alt text](image.png) 
-### Тест логіну
-```text
-<вивід curl POST /auth/login>
+ 
+### Формат помилки
+```json
+{
+  "error": {
+	"code": 400,
+	"message": "Validation failed",
+	"details": ["name must be longer..."],
+	"traceId": "a1b2c3..."
+  },
+  "timestamp": "2025-01-15T10:31:00.000Z"
+}
 ```
-![![alt text](image-2.png)](image-1.png)
-### Тест 401 — запит без токена
+ 
+### Приклад логів (LoggingInterceptor)
 ```text
-<вивід curl POST /api/products без Authorization>
+<вивід docker compose logs з рядками [HTTP] GET /api/products ...>
 ```
-![alt text](image-3.png)
-### Тест 403 — запит з роллю user
+![alt text](image.png)
+### Тест помилки з traceId
 ```text
-<вивід curl POST /api/products з токеном user>
+<вивід curl GET /api/products/999>
 ```
-![alt text](image-4.png) 
-### Тест успішного створення від admin
-```text
-<вивід curl POST /api/products з токеном admin>
-```
-![alt text](image-5.png)
+![alt text](image-1.png)
