@@ -21,6 +21,10 @@ import { RolesGuard }
 import { Roles }
   from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
+import { Query } from '@nestjs/common';
+import { ProductQueryDto }
+  from './dto/product-query.dto';
+
 
 @ApiTags('Products')
 @Controller('api/products')
@@ -29,16 +33,18 @@ export class ProductsController {
     private readonly productsService: ProductsService,
   ) {}
 
-  // 🔓 Публічні ендпоінти
-  @Get()
-  @ApiOperation({
-    summary: 'Отримати всі продукти',
-    description: 'Повертає список усіх продуктів з категоріями',
-  })
-  @ApiResponse({ status: 200, description: 'Список продуктів' })
-  findAll() {
-    return this.productsService.findAll();
-  }
+@Get()
+@ApiOperation({
+  summary: 'Отримати продукти з пагінацією',
+  description:
+	'Повертає список продуктів з мета-інформацією. ' +
+	'Підтримує пагінацію, сортування, фільтрацію ' +
+	'та пошук.',
+})
+findAll(@Query() query: ProductQueryDto) {
+  return this.productsService.findAll(query);
+}
+
 
   @Get(':id')
   @ApiOperation({ summary: 'Отримати продукт за ID' })
