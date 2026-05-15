@@ -3,81 +3,52 @@
 - Group: <232.1>
  
  
-## Практичне заняття №6 — Interceptors + Exception Filters + Swagger
- 
-### Структура репозиторію
-```
-.
-├── src/
-│   ├── auth/ ...
-│   ├── users/ ...
-│   ├── categories/ ...
-│   ├── products/ ...
-│   ├── common/
-│   │   ├── enums/
-│   │   │   └── role.enum.ts
-│   │   ├── guards/
-│   │   │   ├── jwt-auth.guard.ts
-│   │   │   └── roles.guard.ts
-│   │   ├── decorators/
-│   │   │   ├── current-user.decorator.ts
-│   │   │   └── roles.decorator.ts
-│   │   ├── interceptors/
-│   │   │   ├── logging.interceptor.ts
-│   │   │   └── transform.interceptor.ts
-│   │   ├── filters/
-│   │   │   └── http-exception.filter.ts
-│   │   └── pipes/
-│   │   	└── trim.pipe.ts
-│   ├── migrations/
-│   ├── main.ts
-│   └── app.module.ts
-├── swagger-screenshot.png
-├── Dockerfile
-├── docker-compose.yml
-└── README.md
-```
+## Практичне заняття №7 — Redis + Pagination + Filtering
  
 ### Запуск проекту
 ```bash
 cp .env.example .env
 docker compose up --build
+docker compose run --rm app npm run seed
 ```
  
-### Swagger UI
-http://localhost:3000/api/docs
+### API: GET /api/products
  
-![Swagger](swagger-screenshot.png)
+| Параметр | Тип | Default | Опис |
+|----------|-----|---------|------|
+| page | number | 1 | Номер сторінки |
+| pageSize | number | 10 | Елементів на сторінку (max 100) |
+| sort | string | createdAt | Поле сортування |
+| order | asc/desc | desc | Напрямок |
+| categoryId | number | - | Фільтр за категорією |
+| minPrice | number | - | Мінімальна ціна |
+| maxPrice | number | - | Максимальна ціна |
+| search | string | - | Пошук за назвою (ILIKE) |
  
-### Формат успішної відповіді
-```json
-{
-  "data": { ... },
-  "statusCode": 200,
-  "timestamp": "2025-01-15T10:30:00.000Z"
-}
-```
- 
-### Формат помилки
-```json
-{
-  "error": {
-	"code": 400,
-	"message": "Validation failed",
-	"details": ["name must be longer..."],
-	"traceId": "a1b2c3..."
-  },
-  "timestamp": "2025-01-15T10:31:00.000Z"
-}
-```
- 
-### Приклад логів (LoggingInterceptor)
+### Тест пагінації
 ```text
-<вивід docker compose logs з рядками [HTTP] GET /api/products ...>
+<вивід curl GET /api/products?page=1&pageSize=5>
 ```
 ![alt text](image.png)
-### Тест помилки з traceId
+### Тест фільтрації
 ```text
-<вивід curl GET /api/products/999>
+<вивід curl GET /api/products?categoryId=1&minPrice=500>
 ```
 ![alt text](image-1.png)
+### Тест пошуку
+```text
+<вивід curl GET /api/products?search=mac>
+```
+![alt text](image-2.png)
+### Тест кешування (Redis)
+```text
+<вивід docker compose exec redis redis-cli KEYS "products:*">
+```
+![alt text](image-3.png)
+### Тест інвалідації кешу
+```text
+<Redis KEYS до та після POST /api/products>
+```
+![alt text](image-4.png)
+![alt text](image-5.png)
+![alt text](image-6.png)
