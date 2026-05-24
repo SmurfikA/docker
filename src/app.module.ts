@@ -12,6 +12,7 @@ import { ProductsModule } from './products/products.module';
 import { CreateTables1712592000000 } from './migrations/1712592000000-CreateTables';
 import { AddIsActiveToProducts1775672927368 } from './migrations/1775672927368-AddIsActiveToProducts';
 import { CreateUsers1777809559072 } from './migrations/1777809559072-CreateUsers';
+import { CreateOrders1779637179039 } from './migrations/1779637179039-CreateOrders';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -19,6 +20,9 @@ import { AppService } from './app.service';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+
+import { Order } from './orders/entities/order.entity';
+import { OrderItem } from './orders/entities/order-item.entity';
  
 @Module({
   imports: [
@@ -31,13 +35,14 @@ import { AuthModule } from './auth/auth.module';
   	username: process.env.POSTGRES_USER,
   	password: process.env.POSTGRES_PASSWORD,
   	database: process.env.POSTGRES_DB,
-  	entities: [Category, Product, User],
+  	entities: [Category, Product, User, Order, OrderItem],
   	synchronize: false,
   	migrationsRun: true,
   	migrations: [
     	CreateTables1712592000000,
 		AddIsActiveToProducts1775672927368,
-		CreateUsers1777809559072
+		CreateUsers1777809559072,
+		CreateOrders1779637179039
   	],
 	}),
  

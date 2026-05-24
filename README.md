@@ -3,52 +3,80 @@
 - Group: <232.1>
  
  
-## Практичне заняття №7 — Redis + Pagination + Filtering
+## MiniShop API — Фінальний проєкт
  
-### Запуск проекту
+REST API інтернет-магазину на NestJS + PostgreSQL + Redis.
+ 
+### Технології
+- NestJS + TypeScript
+- PostgreSQL + TypeORM (міграції, QueryBuilder)
+- Redis (кешування з інвалідацією)
+- JWT автентифікація + RBAC авторизація
+- class-validator + class-transformer
+- Swagger / OpenAPI
+ 
+### Запуск
 ```bash
 cp .env.example .env
 docker compose up --build
 docker compose run --rm app npm run seed
 ```
  
-### API: GET /api/products
+### Swagger UI
+http://localhost:3000/api/docs
  
-| Параметр | Тип | Default | Опис |
-|----------|-----|---------|------|
-| page | number | 1 | Номер сторінки |
-| pageSize | number | 10 | Елементів на сторінку (max 100) |
-| sort | string | createdAt | Поле сортування |
-| order | asc/desc | desc | Напрямок |
-| categoryId | number | - | Фільтр за категорією |
-| minPrice | number | - | Мінімальна ціна |
-| maxPrice | number | - | Максимальна ціна |
-| search | string | - | Пошук за назвою (ILIKE) |
+### API Endpoints
  
-### Тест пагінації
+#### Auth
+| Method | URL | Auth | Опис |
+|--------|-----|------|------|
+| POST | /auth/register | - | Реєстрація |
+| POST | /auth/login | - | Логін → JWT |
+ 
+#### Categories
+| Method | URL | Auth | Опис |
+|--------|-----|------|------|
+| GET | /api/categories | - | Список |
+| GET | /api/categories/:id | - | Одна |
+| POST | /api/categories | admin | Створити |
+| PATCH | /api/categories/:id | admin | Оновити |
+| DELETE | /api/categories/:id | admin | Видалити |
+ 
+#### Products
+| Method | URL | Auth | Опис |
+|--------|-----|------|------|
+| GET | /api/products | - | Список + pagination + filter |
+| GET | /api/products/:id | - | Один |
+| POST | /api/products | admin | Створити |
+| PATCH | /api/products/:id | admin | Оновити |
+| DELETE | /api/products/:id | admin | Видалити |
+ 
+#### Orders
+| Method | URL | Auth | Опис |
+|--------|-----|------|------|
+| POST | /api/orders | user | Створити замовлення |
+| GET | /api/orders | user | Мої / Всі (admin) |
+| GET | /api/orders/:id | user | Одне (ownership) |
+| PATCH | /api/orders/:id/status | admin | Змінити статус |
+| DELETE | /api/orders/:id | admin | Видалити |
+ 
+### Тест створення замовлення
 ```text
-<вивід curl GET /api/products?page=1&pageSize=5>
+<вивід curl POST /api/orders>
 ```
-![alt text](image.png)
-### Тест фільтрації
+![alt text](image.png) 
+### Тест ownership (403)
 ```text
-<вивід curl GET /api/products?categoryId=1&minPrice=500>
+<вивід curl GET /api/orders/:id з чужим токеном>
 ```
-![alt text](image-1.png)
-### Тест пошуку
+![alt text](image-1.png) 
+### Тест зміни статусу
 ```text
-<вивід curl GET /api/products?search=mac>
+<вивід curl PATCH /api/orders/:id/status>
 ```
 ![alt text](image-2.png)
-### Тест кешування (Redis)
+### Тест insufficient stock
 ```text
-<вивід docker compose exec redis redis-cli KEYS "products:*">
+<вивід curl POST /api/orders з quantity > stock>
 ```
 ![alt text](image-3.png)
-### Тест інвалідації кешу
-```text
-<Redis KEYS до та після POST /api/products>
-```
-![alt text](image-4.png)
-![alt text](image-5.png)
-![alt text](image-6.png)
